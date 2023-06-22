@@ -1,0 +1,52 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    background: #f1f1f1;
+  }
+  
+  .header {
+    background: rgb(178, 238, 252);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .header > a {
+    font-family: Arial;
+    font-size: 14px;
+    text-decoration: none;
+    background: rgb(172, 50, 242);
+    color: rgb(211, 209, 209);
+    padding: 5px;
+    border-radius: 3px;
+  }
+  
+  .nav > a {
+    font-family: Arial;
+    font-size: 14px;
+    text-decoration: none;
+    background: rgb(85, 92, 242);
+    color: rgb(211, 209, 209);
+    padding: 5px;
+    border-radius: 3px;
+  }
+  
+  nav > a:hover {
+    background: rgb(60, 69, 238);
+  }
+  
+  .main {
+    background: rgb(247, 156, 156);
+    padding: 10px;
+  }
+  
+  .footer {
+    background: rgb(162, 162, 162);
+    padding: 10px;
+  }
+  
