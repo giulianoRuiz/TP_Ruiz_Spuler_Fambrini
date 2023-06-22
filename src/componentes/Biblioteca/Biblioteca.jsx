@@ -3,6 +3,7 @@ import { ContextBibliotecas } from '../contextos/biblioteca';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Button from '@mui/material/Button';
 import { TableRow, TableCell } from '@mui/material';
 
 export default function Biblioteca({ biblioteca }) {
