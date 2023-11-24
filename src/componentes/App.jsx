@@ -10,6 +10,8 @@ import { bibliotecasReducer } from './reducers/biblioteca/index.js';
 import { ContextBibliotecas } from './contextos/biblioteca/index.js';
 import FormBiblioteca from './Biblioteca/FormBiblioteca.jsx';
 import NavBar from './NavBar.jsx';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+
 
 import {
     createBrowserRouter,
@@ -20,13 +22,23 @@ import {
     useNavigate
 } from "react-router-dom";
 
+const client = new ApolloClient({
+    uri: 'http://localhost:3000/graphql', // Ajusta la URL según tu configuración
+    cache: new InMemoryCache(),
+});
+
+
 const router = createBrowserRouter([
     { path: "/", Component: Layout, },
     { path: "*", Component: Root }
 ]);
 
 export default function App() {
-    return <RouterProvider router={router} />;
+    return (
+        <ApolloProvider client={client}>
+            <RouterProvider router={router} />
+        </ApolloProvider>
+    );
 }
 
 function Root() {

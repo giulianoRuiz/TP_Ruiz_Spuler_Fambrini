@@ -7,41 +7,38 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
-import { ContextLibros } from "../contextos/libro";
+import { useQuery, gql, useMutation } from '@apollo/client';
+import { GET_LIBROS } from "./ListadoLibros.jsx";
+
+const AGREGAR_LIBRO = gql`
+  mutation agregarLibro($input: LibroInput) {
+    agregarLibro(input: $input) {
+        _id
+        nombre
+        descripcion 
+        fecha_ingreso
+        genero
+    }
+  }
+`;
 
 export default function FormLibro() {
+
+    const [agregarLibro, { data }] = useMutation(AGREGAR_LIBRO, {
+        refetchQueries: [
+          GET_LIBROS, // DocumentNode object parsed with gql
+          'GetLibros' // Query name
+        ],
+      });
 
     const sxFormLibro = {
         marginBottom: 2
     }
 
-    const { handlerActualizarLibro, libroActualizar, dispatch } = useContext(ContextLibros);
-
-    const [id, setId] = useState("");
     const [nombre, setNombre] = useState("");
     const [descripcion, setDescripcion] = useState("");
     const [fecha_ingreso, setFechaIngreso] = useState("");
     const [genero, setGenero] = useState("Terror");
-    const [actualizar, setActualizar] = useState(false);
-
-    useEffect(() => {
-
-        if (libroActualizar) {
-            cargarForm();
-            setActualizar(true);
-        }
-
-    }, [libroActualizar])
-
-    function cargarForm() {
-
-        setId(libroActualizar.id)
-        setNombre(libroActualizar.nombre)
-        setDescripcion(libroActualizar.descripcion)
-        setFechaIngreso(libroActualizar.fecha_ingreso)
-        setGenero(libroActualizar.genero)
-    }
 
     const handlerNombre = event => {
         setNombre(event.target.value);
@@ -66,43 +63,28 @@ export default function FormLibro() {
         setDescripcion("");
         setFechaIngreso("");
         setGenero("Terror");
-
-        if (actualizar) {
-            setActualizar(false);
-            handlerActualizarLibro();
-        }
     }
 
     const handlerSubmit = event => {
 
         event.preventDefault();
 
-        function generarId() {
-            if (id) {
-                return libroActualizar.id; // Utilizo el ID existente de la persona que se actualiza
-            } else {
-                const randomId = Math.floor(Math.random() * 1000000).toString();
-                return randomId;
-            }
-        }
-
         const libro = {
-            id: generarId(),
             nombre: nombre,
             descripcion: descripcion,
             fecha_ingreso: fecha_ingreso,
             genero: genero
         }
 
-        dispatch({ type: actualizar ? "actualizar" : "agregar", libro: actualizar ? { ...libro, id: libroActualizar.id } : libro })
-
-        limpiarForm();
+        agregarLibro({ variables: { input: libro } })
+        .then(()=> limpiarForm())
+        .catch(e => console.error(e))  
     }
 
     return (
         <div style={{ width: 300, padding: 10 }}>
             <form id="formLibro" onSubmit={handlerSubmit}>
-            <h1>{actualizar ? "Edición Libro" : "Nuevo Libro"}</h1>
+            <h1>Nuevo Libro</h1>
 
                 <FormControl fullWidth>
                     <TextField
@@ -170,10 +152,10 @@ export default function FormLibro() {
                     size="small"
                     type="submit"
                 >
-                    {actualizar ? "Actualizar" : "Guardar"}
+                   Guardar
                 </Button>
                 &nbsp;
-                {actualizar && (
+                {/* {actualizar && (
                     <Button
                         variant="contained"
                         color="warning"
@@ -183,7 +165,7 @@ export default function FormLibro() {
                     >
                         Cancelar
                     </Button>
-                )}
+                )} */}
             </form>
         </div>
     )

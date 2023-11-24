@@ -1,27 +1,41 @@
 import React, { useContext } from "react";
 import Libro from './Libro.jsx'
-import { ContextLibros } from "../contextos/libro/index.js";
 import { Paper, TableContainer, Table, TableHead, TableBody, TableRow, TableCell } from "@mui/material";
+
+
+import { useQuery, gql } from '@apollo/client';
+
+export const GET_LIBROS = gql`
+  query GetLibros {
+    libros {
+      _id
+      nombre
+      descripcion 
+      fecha_ingreso
+      genero
+    }
+  }
+`;
 
 export default function ListadoLibro({ render }) {
 
-  const { libros } = useContext(ContextLibros);
+  const { loading, error, data } = useQuery(GET_LIBROS);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+
+  const columnas = ["Nombre", "Descripcion", "Fecha", "Genero", "Acciones"];
 
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }}>
         <TableHead sx={{ background: '#E1E0EC' }}>
           <TableRow>
-            <TableCell style={{ fontWeight: 'bold' }}>ID</TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">Nombre</TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">Descripcion</TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">Fecha de Ingreso</TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">Genero</TableCell>
-            <TableCell style={{ fontWeight: 'bold' }} align="right">Acciones</TableCell>
+            {columnas.map(columna => <TableCell key={columna}><strong>{columna}</strong></TableCell>)}
           </TableRow>
         </TableHead>
         <TableBody>
-          {libros.map(libro => (
+        {data.libros.map(libro => (
             <Libro key={libro.id} libro={libro} />
           ))}
         </TableBody>
